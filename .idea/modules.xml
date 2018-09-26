@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/FirstCateringLtd.iml" filepath="$PROJECT_DIR$/.idea/modules/FirstCateringLtd.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/FirstCateringLtd_main.iml" filepath="$PROJECT_DIR$/.idea/modules/FirstCateringLtd_main.iml" group="FirstCateringLtd" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/FirstCateringLtd_test.iml" filepath="$PROJECT_DIR$/.idea/modules/FirstCateringLtd_test.iml" group="FirstCateringLtd" />
+    </modules>
+  </component>
+</project>
