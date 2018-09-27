@@ -33,6 +33,10 @@ public class Card {
     return amountToppingUp;
   }
 
+  public void setAmountToppingUp(double amountToppingUp) {
+    this.amountToppingUp = amountToppingUp;
+  }
+
   public double getCredit() {
     return credit;
   }
@@ -40,4 +44,6 @@ public class Card {
   public int getPIN() {
     return PIN;
   }
+
+
 }

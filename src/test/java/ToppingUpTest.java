@@ -22,8 +22,8 @@ public class ToppingUpTest {
     RequestBody body = RequestBody.create(JSON,"");
 
     Request request = new Request.Builder()
-        .url("http://localhost:7000/topup")
-        .patch(body)
+        .url("http://localhost:7000/topup/2")
+        .put(body)
         .build();
     Response response = client.newCall(request).execute();
 
@@ -34,18 +34,16 @@ public class ToppingUpTest {
   @Test
   public void TopUpAmount() throws IOException {
 
-    Card card = new Card(2, "Anna");
-
     String json = "{'amountToppingUp':9}";
-    RequestBody body = RequestBody.create(JSON,"");
+    RequestBody body = RequestBody.create(JSON,json);
 
     Request request = new Request.Builder()
-        .url("http://localhost:7000/topup")
-        .patch(body)
+        .url("http://localhost:7000/topup/2")
+        .put(body)
         .build();
     Response response = client.newCall(request).execute();
 
-    card = gson.fromJson(json, Card.class);
+    Card card = gson.fromJson(json, Card.class);
 
 
 
