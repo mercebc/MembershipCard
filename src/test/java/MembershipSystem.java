@@ -9,10 +9,7 @@ import java.io.IOException;
 
 public class MembershipSystem {
 
-  public static void main(String[] args) {
-    Javalin app = Javalin.create().start(7000);
-    app.get("/", ctx -> ctx.result("Hello World"));
-  }
+  MyApp app = new MyApp();
 
   static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
 
