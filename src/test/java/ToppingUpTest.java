@@ -10,11 +10,13 @@ import java.io.IOException;
 
 import static org.junit.Assert.assertEquals;
 
+
 public class ToppingUpTest {
 
   OkHttpClient client = new OkHttpClient();
   Gson gson = new Gson();
   MediaType JSON = MediaType.parse("application/json; charset=utf-8");
+
 
   @Test
   public void TopUpSuccess() throws IOException {
@@ -22,7 +24,7 @@ public class ToppingUpTest {
     RequestBody body = RequestBody.create(JSON,"");
 
     Request request = new Request.Builder()
-        .url("http://localhost:7000/topup/2")
+        .url("http://localhost:7000/topup")
         .put(body)
         .build();
     Response response = client.newCall(request).execute();
@@ -34,25 +36,20 @@ public class ToppingUpTest {
   @Test
   public void TopUpAmount() throws IOException {
 
-    String json = "{'amountToppingUp':9}";
+    String json = "{'amountTopUp':9}";
     RequestBody body = RequestBody.create(JSON,json);
 
     Request request = new Request.Builder()
-        .url("http://localhost:7000/topup/2")
+        .url("http://localhost:7000/topup")
         .put(body)
         .build();
     Response response = client.newCall(request).execute();
 
     Card card = gson.fromJson(json, Card.class);
 
-
-
-    System.out.println(card.getAmountToppingUp());
-    System.out.println(card.getName());
-    System.out.println(card.getEmail());
-    System.out.println(card.getEmployerID());
-
-    assertEquals(201, response.code());
+    assertEquals(202, response.code());
 
   }
+
+
 }

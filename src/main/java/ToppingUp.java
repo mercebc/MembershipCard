@@ -1,39 +1,54 @@
 import com.google.gson.Gson;
 import io.javalin.Context;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
 
 public class ToppingUp {
 
-  static List<Card> cards = new ArrayList<>();
+  static Connection connection;
+  static double newCredit;
 
-  static Card oneCard = new Card(3, "Mary");
-  static Card twoCard = new Card(4, "Peter");
+  public ToppingUp() throws SQLException {
 
-  public static void handleTopUp(Context context) {
+    connection = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/membership_cards", "root", "");
 
-    cards.add(oneCard);
-    cards.add(twoCard);
+  }
+
+  public static void handleTopUp(Context context) throws SQLException {
+
+    String cardIDString = context.pathParam("cardID");
+    int cardID = Integer.parseInt(cardIDString);
 
     Gson gson = new Gson();
+    Card readCard = gson.fromJson(context.body(), Card.class);
 
-    String employerIDString = context.pathParam("employerID");
-    int employerID = Integer.parseInt(employerIDString);
+    updateCredit(cardID,readCard.getAmountTopUp());
 
-    Card card = gson.fromJson(context.body(), Card.class);
-
-    for (Card myCard: cards) {
-      if(myCard.getEmployerID()==employerID){
-            myCard.setAmountToppingUp(card.amountToppingUp);
-      }
-    }
+    System.out.println("Your new credit is " + newCredit);
 
     context.status(202);
 
   }
 
+  public static void updateCredit(int cardID, Double amountTopUp) throws SQLException {
 
+    PreparedStatement select = connection.prepareStatement("SELECT * FROM cards WHERE cardID LIKE ?");
+    select.setInt(1,  cardID);
+    ResultSet resultSet = select.executeQuery();
 
+    newCredit = resultSet.getDouble("credit") + amountTopUp;
+
+    PreparedStatement update = connection.prepareStatement("UPDATE cards SET credit = ? WHERE cardID LIKE ?");
+    select.setDouble(1, newCredit);
+    select.setInt(2,  cardID);
+
+    update.executeUpdate();
+
+  }
 
 }

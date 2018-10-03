@@ -1,40 +1,24 @@
 public class Card {
-  int employerID;
-  String name;
-  String email;
-  String mobileNum;
-  double amountToppingUp;
-  double credit;
-  int PIN;
+  private int cardID;
+  private double amountTopUp;
+  private double credit;
+  private int PIN;
+  private int employeeID;
 
-
-  public Card(int employerID, String name){
-    this.employerID = employerID;
-    this.name = name;
+  public int getCardID() {
+    return cardID;
   }
 
-  public int getEmployerID() {
-    return employerID;
+  public double getAmountTopUp() {
+    return amountTopUp;
   }
 
-  public String getName() {
-    return name;
+  public int getEmployeeID() {
+    return employeeID;
   }
 
-  public String getEmail() {
-    return email;
-  }
-
-  public String getMobileNum() {
-    return mobileNum;
-  }
-
-  public double getAmountToppingUp() {
-    return amountToppingUp;
-  }
-
-  public void setAmountToppingUp(double amountToppingUp) {
-    this.amountToppingUp = amountToppingUp;
+  public void setAmountTopUp(double amountTopUp) {
+    this.amountTopUp = amountTopUp;
   }
 
   public double getCredit() {
