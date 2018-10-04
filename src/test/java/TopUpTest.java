@@ -1,3 +1,4 @@
+import Model.Card;
 import com.google.gson.Gson;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
@@ -11,7 +12,7 @@ import java.io.IOException;
 import static org.junit.Assert.assertEquals;
 
 
-public class ToppingUpTest {
+public class TopUpTest {
 
   OkHttpClient client = new OkHttpClient();
   Gson gson = new Gson();

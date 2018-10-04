@@ -1,3 +1,5 @@
+import Model.Card;
+import Model.Employee;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
