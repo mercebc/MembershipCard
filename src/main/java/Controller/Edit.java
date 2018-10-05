@@ -24,16 +24,18 @@ public class Edit {
 
     Card readCard = myView.generateCardFromJson(context.body());
 
-    updateEmployee(cardID,readCard);
+    Card retrievedCard = updateEmployee(cardID,readCard);
 
     context.status(200);
-    context.result(myView.generateJsonFromCard(readCard));
+    context.result(myView.generateJsonFromCard(retrievedCard));
 
   }
 
-  private void updateEmployee(long cardID, Card readCard) {
+  private Card updateEmployee(long cardID, Card readCard) {
 
     myModel.updateEmployeeInfoOnCard(cardID,readCard);
+
+    return myModel.getCardById(cardID);
 
   }
 
@@ -44,20 +46,22 @@ public class Edit {
 
     Card readCard = myView.generateCardFromJson(context.body());
 
-    updateCredit(cardID,readCard);
+    Card retrievedCard = updateCredit(cardID,readCard);
 
     context.status(200);
-    context.result(myView.generateJsonFromCard(readCard));
+    context.result(myView.generateJsonFromCard(retrievedCard));
 
   }
 
-  public void updateCredit(long cardID, Card readCard){
+  public Card updateCredit(long cardID, Card readCard){
 
     Card card = myModel.getCardById(cardID);
 
     double newCredit = card.getCredit() + readCard.getAmountTopUp();
 
     myModel.updateCreditOnCard(cardID, newCredit);
+
+    return myModel.getCardById(cardID);
 
   }
 
