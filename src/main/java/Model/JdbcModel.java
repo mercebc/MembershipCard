@@ -111,6 +111,7 @@ public class JdbcModel implements Model {
 
     } catch (SQLException e) {
       e.printStackTrace();
+      throw new ParametersMissing("Parameters are missing");
     }
 
   }

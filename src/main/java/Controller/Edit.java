@@ -2,6 +2,7 @@ package Controller;
 
 import Model.Model;
 import Model.CardNotRegistered;
+import Model.ParametersMissing;
 import Model.Card;
 import View.View;
 import io.javalin.Context;
@@ -32,14 +33,14 @@ public class Edit {
 
     } catch (CardNotRegistered e){
       context.status(404);
+    }catch (ParametersMissing e){
+      context.status(400);
     }
   }
 
   private Card updateEmployee(long cardID, Card readCard) {
 
     Card card = myModel.getCardById(cardID);
-
-    System.out.println(card.getCardID());
 
     if (card.getCardID() == 0) {
       throw new CardNotRegistered("Card is not registered");
