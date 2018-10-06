@@ -73,22 +73,33 @@ public class EditTest {
   @Test
   public void ChangeDetailsEmployee() throws IOException {
 
-    String json = "{'employeeID':2357, 'firstName':'Victoria', 'surname':'Smith', 'email':'victoria.test@test.com', 'mobileNumber':'+44756352607'}";
+    String json = "{'employeeID':2357, 'firstName':'Martha', 'surname':'Smith', 'email':'victoria.test@test.com', 'mobileNumber':'+44756352607'}";
     RequestBody body = RequestBody.create(JSON,json);
 
+    Request newCardRequest = new Request.Builder()
+        .url("http://localhost:7000/cards")
+        .post(body)
+        .build();
+    Response newCardResponse =client.newCall(newCardRequest).execute();
+
+    Card newCard = myView.generateCardFromJson(newCardResponse.body().string());
+
+    long cardID = newCard.getCardID();
+
+    json = "{'employeeID':2357, 'firstName':'Victoria', 'surname':'Smith', 'email':'victoria.test@test.com', 'mobileNumber':'+44756352607'}";
+    body = RequestBody.create(JSON,json);
+
     Request request = new Request.Builder()
-        .url("http://localhost:7000/cards/11")
+        .url("http://localhost:7000/cards/" + cardID)
         .put(body)
         .build();
 
-
-    Response  response = client.newCall(request).execute();
+    Response response = client.newCall(request).execute();
 
     Card readCard = myView.generateCardFromJson(response.body().string());
 
 
     assertEquals(200, response.code());
-    assertEquals(9.0, readCard.getCredit(), DELTA); //check that the credit hasn't changed
     assertEquals("Victoria", readCard.getFirstName());
 
   }
