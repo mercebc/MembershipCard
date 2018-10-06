@@ -26,62 +26,40 @@ public class DetailTest {
   }
 
   @Test
-  public void EndPointGetAllCards(){
-    Response response = null;
+  public void EndPointGetAllCards() throws IOException {
 
     Request request = new Request.Builder()
         .url("http://localhost:7000/cards")
         .get()
         .build();
 
-    try {
-      response = client.newCall(request).execute();
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
+    Response response = client.newCall(request).execute();
 
     assertEquals(200, response.code());
   }
 
   @Test
-  public void EndPointGetCard(){
-    Response response = null;
-
+  public void EndPointGetCard() throws IOException {
     Request request = new Request.Builder()
         .url("http://localhost:7000/cards/1")
         .get()
         .build();
 
-    try {
-      response = client.newCall(request).execute();
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
+    Response response = client.newCall(request).execute();
 
     assertEquals(200, response.code());
   }
 
   @Test
-  public void EndPointGetCardWithID1(){
-    Response response = null;
-    Card readCard = null;
-
+  public void EndPointGetCardWithID1() throws IOException {
     Request request = new Request.Builder()
         .url("http://localhost:7000/cards/1")
         .get()
         .build();
 
-    try {
-      response = client.newCall(request).execute();
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
+    Response response = client.newCall(request).execute();
+    Card readCard = myView.generateCardFromJson(response.body().string());
 
-    try {
-      readCard = myView.generateCardFromJson(response.body().string());
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
 
     assertEquals(200, response.code());
     assertEquals("Merce", readCard.getFirstName());
