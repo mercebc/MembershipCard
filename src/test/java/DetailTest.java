@@ -4,8 +4,10 @@ import Model.JdbcModel;
 import View.View;
 import View.GsonView;
 
+import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
+import okhttp3.RequestBody;
 import okhttp3.Response;
 import org.junit.Test;
 
@@ -39,32 +41,34 @@ public class DetailTest {
   }
 
   @Test
-  public void EndPointGetCard() throws IOException {
-    Request request = new Request.Builder()
-        .url("http://localhost:7000/cards/1")
-        .get()
+  public void GetCardWithCardID() throws IOException {
+
+    String json = "{'employeeID':2357, 'firstName':'Martha', 'surname':'Smith', 'email':'victoria.test@test.com', 'mobileNumber':'+44756352607'}";
+    MediaType JSON = MediaType.parse("application/json; charset=utf-8");
+
+    RequestBody body = RequestBody.create(JSON,json);
+
+    Request newCardRequest = new Request.Builder()
+        .url("http://localhost:7000/cards")
+        .post(body)
         .build();
+    Response newCardResponse =client.newCall(newCardRequest).execute();
 
-    Response response = client.newCall(request).execute();
+    Card newCard = myView.generateCardFromJson(newCardResponse.body().string());
 
-    assertEquals(200, response.code());
-  }
+    long cardID = newCard.getCardID();
 
-  @Test
-  public void EndPointGetCardWithID1() throws IOException {
     Request request = new Request.Builder()
-        .url("http://localhost:7000/cards/1")
+        .url("http://localhost:7000/cards/" + cardID)
         .get()
         .build();
 
     Response response = client.newCall(request).execute();
     Card readCard = myView.generateCardFromJson(response.body().string());
 
-
     assertEquals(200, response.code());
-    assertEquals("Merce", readCard.getFirstName());
-    assertEquals("Bauza", readCard.getSurname());
+    assertEquals("Martha", readCard.getFirstName());
+    assertEquals("Smith", readCard.getSurname());
   }
-
 
 }
