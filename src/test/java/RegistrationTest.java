@@ -1,9 +1,6 @@
 import Model.Card;
-import Model.Model;
-import Model.JdbcModel;
-import View.View;
 import View.GsonView;
-
+import View.View;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -15,20 +12,12 @@ import java.io.IOException;
 
 import static org.junit.Assert.assertEquals;
 
-public class RegistrationTest {
+public class RegistrationTest extends TestSetUp{
 
   OkHttpClient client = new OkHttpClient();
   MediaType JSON = MediaType.parse("application/json; charset=utf-8");
 
   View myView = new GsonView();
-  Model myModel = new JdbcModel();
-
-  public RegistrationTest() {
-
-    //RESET DB
-    myModel.setConnectionString("jdbc:mysql://127.0.0.1:3306/membership_cards", "root", "");
-  }
-
 
   @Test
   public void EndPointToRegisterCard(){

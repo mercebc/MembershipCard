@@ -1,7 +1,6 @@
 import Model.Card;
-import View.View;
 import View.GsonView;
-
+import View.View;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -13,7 +12,7 @@ import java.io.IOException;
 
 import static org.junit.Assert.assertEquals;
 
-public class EditTest {
+public class EditTest extends TestSetUp{
 
   private static final double DELTA = 1e-15;
 
@@ -21,7 +20,6 @@ public class EditTest {
   MediaType JSON = MediaType.parse("application/json; charset=utf-8");
 
   View myView = new GsonView();
-
 
   @Test
   public void EndPointPutCredit() throws IOException {
