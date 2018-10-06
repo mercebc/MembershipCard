@@ -41,11 +41,21 @@ public class EditTest {
   @Test
   public void TopUp9credits() throws IOException {
 
-    String json = "{'amountTopUp':9, 'firstName':'Merce'}";
+    String json = "{'employeeID':2357, 'firstName':'Victoria', 'surname':'Smith', 'email':'victoria.test@test.com', 'mobileNumber':'+44756352607', 'amountTopUp':9}";
     RequestBody body = RequestBody.create(JSON,json);
 
+    Request newCardRequest = new Request.Builder()
+        .url("http://localhost:7000/cards")
+        .post(body)
+        .build();
+    Response newCardResponse =client.newCall(newCardRequest).execute();
+
+    Card newCard = myView.generateCardFromJson(newCardResponse.body().string());
+
+    long cardID = newCard.getCardID();
+
     Request request = new Request.Builder()
-        .url("http://localhost:7000/cards/credit/11")
+        .url("http://localhost:7000/cards/credit/" + cardID)
         .put(body)
         .build();
 
