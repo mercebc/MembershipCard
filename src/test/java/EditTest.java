@@ -24,9 +24,7 @@ public class EditTest {
 
 
   @Test
-  public void EndPointPutCredit(){
-    Response response = null;
-
+  public void EndPointPutCredit() throws IOException {
     RequestBody body = RequestBody.create(JSON,"{}");
 
     Request request = new Request.Builder()
@@ -34,21 +32,14 @@ public class EditTest {
         .put(body)
         .build();
 
-    try {
-      response = client.newCall(request).execute();
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
+    Response response = client.newCall(request).execute();
 
     assertEquals(200, response.code());
   }
 
 
   @Test
-  public void TopUp9credits(){
-
-    Card readCard = null;
-    Response response = null;
+  public void TopUp9credits() throws IOException {
 
     String json = "{'amountTopUp':9, 'firstName':'Merce'}";
     RequestBody body = RequestBody.create(JSON,json);
@@ -58,17 +49,10 @@ public class EditTest {
         .put(body)
         .build();
 
-    try {
-      response = client.newCall(request).execute();
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
+    Response response = client.newCall(request).execute();
 
-    try {
-      readCard = myView.generateCardFromJson(response.body().string());
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
+    Card readCard = myView.generateCardFromJson(response.body().string());
+
 
     assertEquals(200, response.code());
     assertEquals(9.0, readCard.getCredit(), DELTA);
@@ -77,10 +61,7 @@ public class EditTest {
 
 
   @Test
-  public void ChangeDetailsEmployee(){
-
-    Card readCard = null;
-    Response response = null;
+  public void ChangeDetailsEmployee() throws IOException {
 
     String json = "{'employeeID':2357, 'firstName':'Victoria', 'surname':'Smith', 'email':'victoria.test@test.com', 'mobileNumber':'+44756352607'}";
     RequestBody body = RequestBody.create(JSON,json);
@@ -90,17 +71,11 @@ public class EditTest {
         .put(body)
         .build();
 
-    try {
-      response = client.newCall(request).execute();
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
 
-    try {
-      readCard = myView.generateCardFromJson(response.body().string());
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
+    Response  response = client.newCall(request).execute();
+
+    Card readCard = myView.generateCardFromJson(response.body().string());
+
 
     assertEquals(200, response.code());
     assertEquals(9.0, readCard.getCredit(), DELTA); //check that the credit hasn't changed
