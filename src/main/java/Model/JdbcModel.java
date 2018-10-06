@@ -60,7 +60,7 @@ public class JdbcModel implements Model {
   @Override
   public Card getCardById(long cardId) {
 
-    Card card = new Card();
+    Card card = new Card(); //default values
 
     try (PreparedStatement statement = connection.prepareStatement(SQL_GET_CARD_BY_ID)){
       statement.setLong(1, cardId);

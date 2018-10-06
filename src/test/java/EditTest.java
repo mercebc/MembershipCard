@@ -103,4 +103,24 @@ public class EditTest extends TestSetUp{
   }
 
 
+  @Test
+  public void CardIsNotRegistered() throws IOException {
+
+    long cardID = 100;
+
+    String json = "{'employeeID':2357, 'firstName':'Victoria', 'surname':'Smith', 'email':'victoria.test@test.com', 'mobileNumber':'+44756352607'}";
+    RequestBody body = RequestBody.create(JSON,json);
+
+    Request request = new Request.Builder()
+        .url("http://localhost:7000/cards/" + cardID)
+        .put(body)
+        .build();
+
+    Response response = client.newCall(request).execute();
+
+    assertEquals(404, response.code());
+
+  }
+
+
 }
