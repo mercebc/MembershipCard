@@ -1,5 +1,7 @@
 package Model;
 
+import Model.Exceptions.ParametersMissing;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;

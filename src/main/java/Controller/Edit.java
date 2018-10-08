@@ -3,7 +3,7 @@ package Controller;
 import Model.Model;
 import Model.Employee;
 import Model.Exceptions.CardNotRegistered;
-import Model.ParametersMissing;
+import Model.Exceptions.ParametersMissing;
 import Model.Exceptions.EmployeeNotRegistered;
 import Model.Card;
 import View.View;
@@ -37,6 +37,7 @@ public class Edit {
       context.result("Please register employee before editing");
     } catch (ParametersMissing e) {
       context.status(400);
+      context.result("Parameters missing");
     }
   }
 
@@ -49,7 +50,6 @@ public class Edit {
     } else {
       myModel.updateEmployeeInfo(employeeID, readEmployee);
     }
-
     return myModel.getEmployeeById(employeeID);
 
   }
@@ -70,6 +70,7 @@ public class Edit {
       context.result("Please register the card before topping up");
     } catch (ParametersMissing e) {
       context.status(400);
+      context.result("Parameters missing");
     }
 
   }
@@ -79,13 +80,19 @@ public class Edit {
 
     Card card = myModel.getCardById(cardID);
 
-    double newCredit = card.getCredit() + readCard.getAmountTopUp();
+    if (readCard.getAmountTopUp() == 0) {
+      throw new ParametersMissing("Amount to top up is missing");
 
-    if (card.getCardID() == 0) {
-      throw new CardNotRegistered("Card is not registered");
     } else {
-      myModel.topUpCreditOnCard(cardID, newCredit);
+      double newCredit = card.getCredit() + readCard.getAmountTopUp();
+
+      if (card.getCardID() == 0) {
+        throw new CardNotRegistered("Card is not registered");
+      } else {
+        myModel.topUpCreditOnCard(cardID, newCredit);
+      }
     }
+
     return myModel.getCardById(cardID);
 
   }

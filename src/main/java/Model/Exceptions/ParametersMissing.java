@@ -1,4 +1,4 @@
-package Model;
+package Model.Exceptions;
 
 public class ParametersMissing extends RuntimeException{
 
