@@ -1,4 +1,4 @@
-package Model;
+package Model.Exceptions;
 
 public class CardNotRegistered extends RuntimeException{
 

@@ -1,4 +1,4 @@
-import Model.Card;
+import Model.Employee;
 import View.GsonView;
 import View.View;
 import okhttp3.MediaType;
@@ -12,40 +12,18 @@ import java.io.IOException;
 
 import static org.junit.Assert.assertEquals;
 
-public class RegistrationTest extends TestSetUp{
+public class RegistrationTest extends TestSetUp {
 
   OkHttpClient client = new OkHttpClient();
   MediaType JSON = MediaType.parse("application/json; charset=utf-8");
 
   View myView = new GsonView();
 
-  @Test
-  public void EndPointToRegisterCard(){
-
-    RequestBody body = RequestBody.create(JSON,"{}");
-    Response response = null;
-
-    Request request = new Request.Builder()
-        .url("http://localhost:7000/cards")
-        .post(body)
-        .build();
-
-    try {
-      response = client.newCall(request).execute();
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
-
-    assertEquals(201, response.code());
-  }
 
   @Test
-  public void RegisterCardAndHeaderLocation() {
+  public void RegisterCardAndHeaderLocation() throws IOException {
 
-    String json = "{'employeeID':2357, 'firstName':'Victoria', 'surname':'Smith', 'email':'victoria.test@test.com', 'mobileNumber':'+44756352607'}";
-
-    Card readCard = null;
-    Response response = null;
+    String json = "{'employeeID':00401, 'firstName':'Victoria', 'surname':'Smith', 'email':'victoria.test@test.com', 'mobileNumber':'+44756352607'}";
 
     RequestBody body = RequestBody.create(JSON,json);
 
@@ -54,22 +32,14 @@ public class RegistrationTest extends TestSetUp{
         .post(body)
         .build();
 
-    try {
-      response = client.newCall(request).execute();
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
+    Response response = client.newCall(request).execute();
 
-    try {
-      readCard = myView.generateCardFromJson(response.body().string());
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
+    Employee readEmployee = myView.generateEmployeeFromJson(response.body().string());
 
-    String url = request.url() + "/" + readCard.getCardID();
+    String url = request.url() + "/" + readEmployee.getCardID();
 
     assertEquals(url, response.header("Location"));
-    assertEquals(2357, readCard.getEmployeeID());
+    assertEquals(401, readEmployee.getEmployeeID());
   }
 
 }

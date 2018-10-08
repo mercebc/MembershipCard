@@ -12,20 +12,23 @@ public class JdbcModel implements Model {
 
   Connection connection;
 
-  public JdbcModel(){
+  private final String SQL_CREATE_EMPLOYEE = "INSERT INTO employees (employeeID, firstName, surname, email, mobileNumber, cardID) VALUES (?,?,?,?,?,?)";
+  private final String SQL_CREATE_CARD = "INSERT INTO cards (credit, PIN) values (DEFAULT, DEFAULT)";
 
-  setConnectionString("jdbc:mysql://127.0.0.1:3306/membership_cards", "root", "");
-
-  }
-
-  private final String SQL_CREATE_CARD = "INSERT INTO cards (employeeID, firstName, surname, email, mobileNumber, PIN) VALUES (?,?,?,?,?,?)";
-
-  private final String SQL_GET_CARD_BY_ID = "SELECT cardID, employeeID, firstName, surname, email, mobileNumber, credit FROM cards WHERE cardID = ?";
-  private final String SQL_GET_ALL_CARDS = "SELECT cardID, employeeID, firstName, surname, email, mobileNumber, credit FROM cards";
+  private final String SQL_GET_EMPLOYEE_BY_ID = "SELECT * FROM employees WHERE employeeID = ?";
+  private final String SQL_GET_ALL_EMPLOYEES = "SELECT * FROM employees";
+  private final String SQL_GET_CARD_BY_ID = "SELECT * FROM cards WHERE cardID = ?";
 
   private final String SQL_UPDATE_CREDIT_ON_CARD = "UPDATE cards SET credit = ? WHERE cardID LIKE ?";
-  private final String SQL_UPDATE_EMPLOYEE_INFO_ON_CARD = "UPDATE cards SET employeeID = ?,  firstName = ?, surname = ?, email = ?, mobileNumber = ?, PIN = ? WHERE cardID LIKE ?";
-  private final String SQL_DELETE_CARD = "DELETE FROM cards WHERE cardID = ?";
+  private final String SQL_UPDATE_EMPLOYEE_INFO = "UPDATE employees SET firstName = ?, surname = ?, email = ?, mobileNumber = ? WHERE employeeID LIKE ?";
+
+  private final String SQL_DELETE_CARD = "DELETE FROM cards WHERE cardID = ?"; //delete employee too
+
+  public JdbcModel(String url, String user, String password){
+
+    setConnectionString(url, user, password);
+
+  }
 
   @Override
   public void setConnectionString(String url, String user, String password){
@@ -37,24 +40,60 @@ public class JdbcModel implements Model {
   }
 
   @Override
-  public void registerCard(Card readCard){
+  public Employee registerCard(Employee readEmployee){
 
     try (PreparedStatement statement = connection.prepareStatement(SQL_CREATE_CARD, Statement.RETURN_GENERATED_KEYS)){
-      statement.setLong(1, readCard.getEmployeeID());
-      statement.setString(2, readCard.getFirstName());
-      statement.setString(3, readCard.getSurname());
-      statement.setString(4, readCard.getEmail());
-      statement.setString(5, readCard.getMobileNumber());
-      statement.setInt(6, readCard.getPIN());
       statement.executeUpdate();
       try (ResultSet generatedKeys = statement.getGeneratedKeys()) {
         if (generatedKeys.next()) {
-          readCard.setCardID(generatedKeys.getLong(1));
+          readEmployee.setCardID(generatedKeys.getLong(1));
         }
       }
     } catch (SQLException e) {
       e.printStackTrace();
     }
+
+    return readEmployee;
+  }
+
+  @Override
+  public void registerEmployee(Employee readEmployee){
+
+    try (PreparedStatement statement = connection.prepareStatement(SQL_CREATE_EMPLOYEE)){
+      statement.setLong(1, readEmployee.getEmployeeID());
+      statement.setString(2, readEmployee.getFirstName());
+      statement.setString(3, readEmployee.getSurname());
+      statement.setString(4, readEmployee.getEmail());
+      statement.setString(5, readEmployee.getMobileNumber());
+      statement.setLong(6, readEmployee.getCardID());
+      statement.executeUpdate();
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+  }
+
+  @Override
+  public Employee getEmployeeById(long employeeID) {
+
+    Employee employee = new Employee(); //default values
+
+    try (PreparedStatement statement = connection.prepareStatement(SQL_GET_EMPLOYEE_BY_ID)){
+      statement.setLong(1, employeeID);
+
+      try (ResultSet result = statement.executeQuery()) {
+        while (result.next()) {
+          employee.setEmployeeID(result.getLong(1));
+          employee.setFirstName(result.getString(2));
+          employee.setSurname(result.getString(3));
+          employee.setEmail(result.getString(4));
+          employee.setMobileNumber(result.getString(5));
+          employee.setCardID(result.getLong(6));
+        }
+      }
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+    return employee;
   }
 
   @Override
@@ -68,12 +107,7 @@ public class JdbcModel implements Model {
       try (ResultSet result = statement.executeQuery()) {
         while (result.next()) {
           card.setCardID(result.getLong(1));
-          card.setEmployeeID(result.getLong(2));
-          card.setFirstName(result.getString(3));
-          card.setSurname(result.getString(4));
-          card.setEmail(result.getString(5));
-          card.setMobileNumber(result.getString(6));
-          card.setCredit(result.getDouble(7));
+          card.setCredit(result.getDouble(2));
           }
       }
     } catch (SQLException e) {
@@ -83,30 +117,11 @@ public class JdbcModel implements Model {
   }
 
   @Override
-  public void updateCreditOnCard(long cardId, double newCredit) {
+  public void topUpCreditOnCard(long cardId, double newCredit) {
 
     try (PreparedStatement statement = connection.prepareStatement(SQL_UPDATE_CREDIT_ON_CARD)){
       statement.setDouble(1, newCredit);
       statement.setLong(2, cardId);
-      statement.executeUpdate();
-
-    } catch (SQLException e) {
-      e.printStackTrace();
-    }
-
-  }
-
-  @Override
-  public void updateEmployeeInfoOnCard(long cardId, Card readCard) {
-
-    try (PreparedStatement statement = connection.prepareStatement(SQL_UPDATE_EMPLOYEE_INFO_ON_CARD)){
-      statement.setLong(1, readCard.getEmployeeID());
-      statement.setString(2, readCard.getFirstName());
-      statement.setString(3, readCard.getSurname());
-      statement.setString(4, readCard.getEmail());
-      statement.setString(5, readCard.getMobileNumber());
-      statement.setInt(6, readCard.getPIN());
-      statement.setLong(7, cardId);
       statement.executeUpdate();
 
     } catch (SQLException e) {
@@ -117,29 +132,43 @@ public class JdbcModel implements Model {
   }
 
   @Override
-  public ArrayList<Card> getAllCards() {
-    ArrayList<Card> allCards = new ArrayList();
+  public void updateEmployeeInfo(long employeeID, Employee readEmployee) {
 
-    try (PreparedStatement statement = connection.prepareStatement(SQL_GET_ALL_CARDS);
-        ResultSet result = statement.executeQuery()) {
-          while (result.next()) {
-            Card card = new Card();
-            card.setCardID(result.getLong(1));
-            card.setEmployeeID(result.getLong(2));
-            card.setFirstName(result.getString(3));
-            card.setSurname(result.getString(4));
-            card.setEmail(result.getString(5));
-            card.setMobileNumber(result.getString(6));
-            card.setCredit(result.getDouble(7));
-            allCards.add(card);
-          }
+    try (PreparedStatement statement = connection.prepareStatement(SQL_UPDATE_EMPLOYEE_INFO)){
+      statement.setString(1, readEmployee.getFirstName());
+      statement.setString(2, readEmployee.getSurname());
+      statement.setString(3, readEmployee.getEmail());
+      statement.setString(4, readEmployee.getMobileNumber());
+      statement.setLong(5, employeeID);
+      statement.executeUpdate();
+    } catch (SQLException e) {
+      e.printStackTrace();
+      throw new ParametersMissing("Parameters are missing");
+    }
+
+  }
+
+  @Override
+  public ArrayList<Employee> getAllEmployees() {
+    ArrayList<Employee> allEmployees = new ArrayList();
+
+    try (PreparedStatement statement = connection.prepareStatement(SQL_GET_ALL_EMPLOYEES);
+         ResultSet result = statement.executeQuery()) {
+      while (result.next()) {
+        Employee employee = new Employee();
+        employee.setEmployeeID(result.getLong(1));
+        employee.setFirstName(result.getString(2));
+        employee.setSurname(result.getString(3));
+        employee.setEmail(result.getString(4));
+        employee.setMobileNumber(result.getString(5));
+        employee.setCardID(result.getLong(6));
+        allEmployees.add(employee);
+      }
     } catch (SQLException e) {
       e.printStackTrace();
     }
-
-    return allCards;
+    return allEmployees;
   }
-
 
   @Override
   public void deleteCard(int cardId) {

@@ -1,7 +1,8 @@
 package Controller;
 
 import Model.Model;
-import Model.Card;
+import Model.Exceptions.EmployeeAlreadyRegistered;
+import Model.Employee;
 import View.View;
 import io.javalin.Context;
 
@@ -20,16 +21,35 @@ public class Registration{
 
   public void handleCardRegistration(Context context) {
 
-    Card readCard = myView.generateCardFromJson(context.body());
+    Employee readEmployee = myView.generateEmployeeFromJson(context.body());
+    Employee foundEmployee = myModel.getEmployeeById(readEmployee.getEmployeeID());
 
-    myModel.registerCard(readCard);
-    context.status(201);
+    try{
+      Employee newEmployee = registerEmployeeAndCard(readEmployee, foundEmployee);
+      context.status(201);
+      context.result(myView.generateJsonFromEmployee(newEmployee));
 
-    readCard = myModel.getCardById(readCard.getCardID());
-    context.result(myView.generateJsonFromCard(readCard));
+      String url = context.url() + "/" + newEmployee.getCardID();
+      context.header("location", url);
 
-    String url = context.url() + "/" + readCard.getCardID();
-    context.header("location", url);
+    }catch (EmployeeAlreadyRegistered e) {
+      context.result("Welcome back " + foundEmployee.getFirstName() + " " + foundEmployee.getSurname());
+    }
+
+  }
+
+  public Employee registerEmployeeAndCard(Employee readEmployee, Employee foundEmployee){
+
+    if(foundEmployee.getEmployeeID() == 0){
+
+      readEmployee = myModel.registerCard(readEmployee);
+
+      myModel.registerEmployee(readEmployee);
+
+      return myModel.getEmployeeById(readEmployee.getEmployeeID());
+    }else{
+      throw new EmployeeAlreadyRegistered("Employee is already registered");
+    }
   }
 
 }

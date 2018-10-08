@@ -1,8 +1,10 @@
 package Controller;
 
 import Model.Model;
-import Model.CardNotRegistered;
+import Model.Employee;
+import Model.Exceptions.CardNotRegistered;
 import Model.ParametersMissing;
+import Model.Exceptions.EmployeeNotRegistered;
 import Model.Card;
 import View.View;
 import io.javalin.Context;
@@ -21,33 +23,34 @@ public class Edit {
 
   public void handleEdit(Context context) {
 
-    String cardIDString = context.pathParam("id");
-    long cardID = Long.parseLong(cardIDString);
+    String employeeIDString = context.pathParam("id");
+    long employeeID = Long.parseLong(employeeIDString);
 
-    Card readCard = myView.generateCardFromJson(context.body());
+    Employee readEmployee = myView.generateEmployeeFromJson(context.body());
 
     try {
-      Card retrievedCard = updateEmployee(cardID, readCard);
+      Employee retrievedEmployee = updateEmployee(employeeID, readEmployee);
       context.status(200);
-      context.result(myView.generateJsonFromCard(retrievedCard));
-
-    } catch (CardNotRegistered e){
+      context.result(myView.generateJsonFromEmployee(retrievedEmployee));
+    } catch (EmployeeNotRegistered e) {
       context.status(404);
-    }catch (ParametersMissing e){
+      context.result("Please register employee before editing");
+    } catch (ParametersMissing e) {
       context.status(400);
     }
   }
 
-  private Card updateEmployee(long cardID, Card readCard) {
+  private Employee updateEmployee(long employeeID, Employee readEmployee) {
 
-    Card card = myModel.getCardById(cardID);
+    Employee employee = myModel.getEmployeeById(employeeID);
 
-    if (card.getCardID() == 0) {
-      throw new CardNotRegistered("Card is not registered");
+    if (employee.getEmployeeID() == 0) {
+      throw new EmployeeNotRegistered("Employee is not registered");
     } else {
-      myModel.updateEmployeeInfoOnCard(cardID, readCard);
+      myModel.updateEmployeeInfo(employeeID, readEmployee);
     }
-    return myModel.getCardById(cardID);
+
+    return myModel.getEmployeeById(employeeID);
 
   }
 
@@ -58,21 +61,31 @@ public class Edit {
 
     Card readCard = myView.generateCardFromJson(context.body());
 
-    Card retrievedCard = updateCredit(cardID, readCard);
-
-    context.status(200);
-    context.result(myView.generateJsonFromCard(retrievedCard));
+    try {
+      Card retrievedCard = updateCredit(cardID, readCard);
+      context.status(200);
+      context.result(myView.generateJsonFromCard(retrievedCard));
+    } catch (CardNotRegistered e) {
+      context.status(404);
+      context.result("Please register the card before topping up");
+    } catch (ParametersMissing e) {
+      context.status(400);
+    }
 
   }
 
   public Card updateCredit(long cardID, Card readCard) {
 
+
     Card card = myModel.getCardById(cardID);
 
     double newCredit = card.getCredit() + readCard.getAmountTopUp();
 
-    myModel.updateCreditOnCard(cardID, newCredit);
-
+    if (card.getCardID() == 0) {
+      throw new CardNotRegistered("Card is not registered");
+    } else {
+      myModel.topUpCreditOnCard(cardID, newCredit);
+    }
     return myModel.getCardById(cardID);
 
   }

@@ -4,18 +4,22 @@ import java.util.ArrayList;
 
 public interface Model {
 
+
   void setConnectionString(String url, String user, String password);
 
-  void registerCard(Card readCard);
+  Employee registerCard(Employee readEmployee);
+
+  void registerEmployee(Employee readEmployee);
+
+  Employee getEmployeeById(long employeeID);
 
   Card getCardById(long cardId);
 
-  void updateCreditOnCard(long cardId, double newCredit);
+  void topUpCreditOnCard(long cardId, double newCredit);
 
-  void updateEmployeeInfoOnCard(long cardId, Card readCard);
+  void updateEmployeeInfo(long employeeID, Employee readEmployee);
 
-  ArrayList<Card> getAllCards();
+  ArrayList<Employee> getAllEmployees();
 
   void deleteCard(int cardId);
-
 }

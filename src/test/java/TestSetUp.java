@@ -10,10 +10,13 @@ public class TestSetUp {
   @Before
   public void setUp() {
 
-    try(Connection connection = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/membership_cards", "root", "")){
+    try(Connection connection = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/MembershipSystem", "root", "")){
 
-      PreparedStatement statement = connection.prepareStatement("TRUNCATE TABLE membership_cards.cards");
-      statement.execute();
+     PreparedStatement statement = connection.prepareStatement("TRUNCATE TABLE MembershipSystem.cards");
+     statement.execute();
+
+     statement = connection.prepareStatement("TRUNCATE TABLE MembershipSystem.employees");
+     statement.execute();
 
     } catch (SQLException e) {
       e.printStackTrace();

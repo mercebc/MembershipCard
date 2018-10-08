@@ -1,4 +1,5 @@
 import Model.Card;
+import Model.Employee;
 import View.GsonView;
 import View.View;
 import okhttp3.MediaType;
@@ -21,25 +22,11 @@ public class EditTest extends TestSetUp{
 
   View myView = new GsonView();
 
-  @Test
-  public void EndPointPutCredit() throws IOException {
-    RequestBody body = RequestBody.create(JSON,"{}");
-
-    Request request = new Request.Builder()
-        .url("http://localhost:7000/cards/credit/4")
-        .put(body)
-        .build();
-
-    Response response = client.newCall(request).execute();
-
-    assertEquals(200, response.code());
-  }
-
 
   @Test
   public void TopUp9credits() throws IOException {
 
-    String json = "{'employeeID':2357, 'firstName':'Victoria', 'surname':'Smith', 'email':'victoria.test@test.com', 'mobileNumber':'+44756352607', 'amountTopUp':9}";
+    String json = "{'employeeID':00404, 'firstName':'Martha', 'surname':'Smith', 'email':'victoria.test@test.com', 'mobileNumber':'+44756352607'}";
     RequestBody body = RequestBody.create(JSON,json);
 
     Request newCardRequest = new Request.Builder()
@@ -48,12 +35,15 @@ public class EditTest extends TestSetUp{
         .build();
     Response newCardResponse =client.newCall(newCardRequest).execute();
 
-    Card newCard = myView.generateCardFromJson(newCardResponse.body().string());
+    Employee newEmployee = myView.generateEmployeeFromJson(newCardResponse.body().string());
 
-    long cardID = newCard.getCardID();
+    long cardID = newEmployee.getCardID();
+
+    json = "{'amountTopUp':9}";
+    body = RequestBody.create(JSON,json);
 
     Request request = new Request.Builder()
-        .url("http://localhost:7000/cards/credit/" + cardID)
+        .url("http://localhost:7000/cards/" + cardID)
         .put(body)
         .build();
 
@@ -71,7 +61,7 @@ public class EditTest extends TestSetUp{
   @Test
   public void ChangeDetailsEmployee() throws IOException {
 
-    String json = "{'employeeID':2357, 'firstName':'Martha', 'surname':'Smith', 'email':'victoria.test@test.com', 'mobileNumber':'+44756352607'}";
+    String json = "{'employeeID':00405, 'firstName':'Martha', 'surname':'Smith', 'email':'victoria.test@test.com', 'mobileNumber':'+44756352607'}";
     RequestBody body = RequestBody.create(JSON,json);
 
     Request newCardRequest = new Request.Builder()
@@ -80,25 +70,24 @@ public class EditTest extends TestSetUp{
         .build();
     Response newCardResponse =client.newCall(newCardRequest).execute();
 
-    Card newCard = myView.generateCardFromJson(newCardResponse.body().string());
+    Employee newEmployee = myView.generateEmployeeFromJson(newCardResponse.body().string());
 
-    long cardID = newCard.getCardID();
+    long employeeID = newEmployee.getEmployeeID();
 
-    json = "{'employeeID':2357, 'firstName':'Victoria', 'surname':'Smith', 'email':'victoria.test@test.com', 'mobileNumber':'+44756352607'}";
-    body = RequestBody.create(JSON,json);
+    String newJson = "{'firstName':'Victoria', 'surname':'Smith', 'email':'victoria.test@test.com', 'mobileNumber':'+44756352607'}";
+    RequestBody newBody = RequestBody.create(JSON,newJson);
 
     Request request = new Request.Builder()
-        .url("http://localhost:7000/cards/" + cardID)
-        .put(body)
+        .url("http://localhost:7000/employees/" + employeeID)
+        .put(newBody)
         .build();
 
     Response response = client.newCall(request).execute();
 
-    Card readCard = myView.generateCardFromJson(response.body().string());
-
+    Employee readEmployee = myView.generateEmployeeFromJson(response.body().string());
 
     assertEquals(200, response.code());
-    assertEquals("Victoria", readCard.getFirstName());
+    assertEquals("Victoria", readEmployee.getFirstName());
 
   }
 
@@ -108,7 +97,7 @@ public class EditTest extends TestSetUp{
 
     long cardID = 100;
 
-    String json = "{'employeeID':2357, 'firstName':'Victoria', 'surname':'Smith', 'email':'victoria.test@test.com', 'mobileNumber':'+44756352607'}";
+    String json = "{'employeeID':00406, 'firstName':'Victoria', 'surname':'Smith', 'email':'victoria.test@test.com', 'mobileNumber':'+44756352607'}";
     RequestBody body = RequestBody.create(JSON,json);
 
     Request request = new Request.Builder()
@@ -125,7 +114,7 @@ public class EditTest extends TestSetUp{
   @Test
   public void NotAllParamsInRequest() throws IOException {
 
-    String json = "{'employeeID':2357, 'firstName':'Martha', 'surname':'Smith', 'email':'victoria.test@test.com', 'mobileNumber':'+44756352607'}";
+    String json = "{'employeeID':00403, 'firstName':'Martha', 'surname':'Smith', 'email':'victoria.test@test.com', 'mobileNumber':'+44756352607'}";
     RequestBody body = RequestBody.create(JSON,json);
 
     Request newCardRequest = new Request.Builder()
@@ -134,15 +123,15 @@ public class EditTest extends TestSetUp{
         .build();
     Response newCardResponse =client.newCall(newCardRequest).execute();
 
-    Card newCard = myView.generateCardFromJson(newCardResponse.body().string());
+    Employee newEmployee = myView.generateEmployeeFromJson(newCardResponse.body().string());
 
-    long cardID = newCard.getCardID();
+    long employeeID = newEmployee.getEmployeeID();
 
-    json = "{'employeeID':2357, 'surname':'Smith', 'email':'victoria.test@test.com', 'mobileNumber':'+44756352607'}";
+    json = "{'email':'victoria.test@test.com'}";
     body = RequestBody.create(JSON,json);
 
     Request request = new Request.Builder()
-        .url("http://localhost:7000/cards/" + cardID)
+        .url("http://localhost:7000/employees/" + employeeID)
         .put(body)
         .build();
 

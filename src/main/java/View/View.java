@@ -13,4 +13,9 @@ public interface View {
 
   String generateJsonFromCards(ArrayList<Card> cards);
 
+  String generateJsonFromEmployee(Employee employee);
+
+  String generateJsonFromEmployees(ArrayList<Employee> employees);
+
+  Employee generateEmployeeFromJson(String json);
 }

@@ -1,12 +1,12 @@
 package Model;
 
 public class Employee {
-  private int employeeID;
+  private long employeeID;
   private String firstName;
   private String surname;
   private String email;
   private String mobileNumber;
-  private int cardID;
+  private long cardID;
 
   public String getSurname() {
     return surname;
@@ -16,7 +16,7 @@ public class Employee {
     return email;
   }
 
-  public int getEmployeeID() {
+  public long getEmployeeID() {
     return employeeID;
   }
 
@@ -28,7 +28,31 @@ public class Employee {
     return mobileNumber;
   }
 
-  public int getCardID() {
+  public long getCardID() {
     return cardID;
+  }
+
+  public void setSurname(String surname) {
+    this.surname = surname;
+  }
+
+  public void setMobileNumber(String mobileNumber) {
+    this.mobileNumber = mobileNumber;
+  }
+
+  public void setFirstName(String firstName) {
+    this.firstName = firstName;
+  }
+
+  public void setEmployeeID(long employeeID) {
+    this.employeeID = employeeID;
+  }
+
+  public void setEmail(String email) {
+    this.email = email;
+  }
+
+  public void setCardID(long cardID) {
+    this.cardID = cardID;
   }
 }
