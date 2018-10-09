@@ -35,9 +35,9 @@ public class EditTest extends TestSetUp{
         .build();
     Response newCardResponse =client.newCall(newCardRequest).execute();
 
-    Employee newEmployee = myView.generateEmployeeFromJson(newCardResponse.body().string());
+    Card newCard = myView.generateCardFromJson(newCardResponse.body().string());
 
-    long cardID = newEmployee.getCardID();
+    long cardID = newCard.getEmployeeID();
 
     json = "{'amountTopUp':9}";
     body = RequestBody.create(JSON,json);
@@ -70,9 +70,9 @@ public class EditTest extends TestSetUp{
         .build();
     Response newCardResponse =client.newCall(newCardRequest).execute();
 
-    Employee newEmployee = myView.generateEmployeeFromJson(newCardResponse.body().string());
+    Card newCard = myView.generateCardFromJson(newCardResponse.body().string());
 
-    long employeeID = newEmployee.getEmployeeID();
+    long employeeID = newCard.getEmployeeID();
 
     String newJson = "{'firstName':'Victoria', 'surname':'Smith', 'email':'victoria.test@test.com', 'mobileNumber':'+44756352607'}";
     RequestBody newBody = RequestBody.create(JSON,newJson);
@@ -123,9 +123,9 @@ public class EditTest extends TestSetUp{
         .build();
     Response newCardResponse =client.newCall(newCardRequest).execute();
 
-    Employee newEmployee = myView.generateEmployeeFromJson(newCardResponse.body().string());
+    Card newCard = myView.generateCardFromJson(newCardResponse.body().string());
 
-    long employeeID = newEmployee.getEmployeeID();
+    long employeeID = newCard.getEmployeeID();
 
     json = "{'email':'victoria.test@test.com'}";
     body = RequestBody.create(JSON,json);

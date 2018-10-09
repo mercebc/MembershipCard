@@ -2,22 +2,34 @@ package Controller;
 
 import Model.Model;
 import Model.JdbcModel;
+import Model.Validator;
 import View.View;
 import View.GsonView;
 import io.javalin.Javalin;
+import org.eclipse.jetty.server.Server;
 
 public class MyApp {
 
   public static void main(String[] args) {
 
-    Javalin app = Javalin.create().start(7000);
+    Javalin app = Javalin.create();
+
+    app.server(() -> {
+      Server server = new Server();
+      server.setStopTimeout(3);
+      return server;
+    });
+
+    app.start(7000);
 
     View gson = new GsonView();
     Model jdbc = new JdbcModel("jdbc:mysql://127.0.0.1:3306/MembershipSystem", "root", "");
 
-    Registration registration = new Registration(gson, jdbc);
-    Edit edit = new Edit(gson, jdbc);
-    Detail detail = new Detail(gson, jdbc);
+    Validator validate = new Validator(jdbc);
+
+    Registration registration = new Registration(gson, jdbc, validate);
+    Edit edit = new Edit(gson, jdbc, validate);
+    Detail detail = new Detail(gson, jdbc, validate);
 
     app.get("/cards/:id", detail::handleCardDetail);
     app.get("/employees/", detail::handleEmployeesList);

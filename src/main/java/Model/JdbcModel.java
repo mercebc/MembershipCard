@@ -1,6 +1,6 @@
 package Model;
 
-import Model.Exceptions.ParametersMissing;
+import Exceptions.ParametersMissing;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -14,8 +14,8 @@ public class JdbcModel implements Model {
 
   Connection connection;
 
-  private final String SQL_CREATE_EMPLOYEE = "INSERT INTO employees (employeeID, firstName, surname, email, mobileNumber, cardID) VALUES (?,?,?,?,?,?)";
-  private final String SQL_CREATE_CARD = "INSERT INTO cards (credit, PIN) values (DEFAULT, DEFAULT)";
+  private final String SQL_CREATE_EMPLOYEE = "INSERT INTO employees (employeeID, firstName, surname, email, mobileNumber) VALUES (?,?,?,?,?)";
+  private final String SQL_CREATE_CARD = "INSERT INTO cards (credit, PIN, employeeID) values (DEFAULT, DEFAULT, ?)";
 
   private final String SQL_GET_EMPLOYEE_BY_ID = "SELECT * FROM employees WHERE employeeID = ?";
   private final String SQL_GET_ALL_EMPLOYEES = "SELECT * FROM employees";
@@ -42,20 +42,25 @@ public class JdbcModel implements Model {
   }
 
   @Override
-  public Employee registerCard(Employee readEmployee){
+  public Card registerCard(Employee readEmployee){
+
+    Card card = new Card(); //default values
 
     try (PreparedStatement statement = connection.prepareStatement(SQL_CREATE_CARD, Statement.RETURN_GENERATED_KEYS)){
+      statement.setLong(1, readEmployee.getEmployeeID());
       statement.executeUpdate();
       try (ResultSet generatedKeys = statement.getGeneratedKeys()) {
         if (generatedKeys.next()) {
-          readEmployee.setCardID(generatedKeys.getLong(1));
+          card.setCardID(generatedKeys.getLong(1));
+          card.setEmployeeID(readEmployee.getEmployeeID());
         }
       }
     } catch (SQLException e) {
       e.printStackTrace();
+      throw new ParametersMissing("Parameters are missing");
     }
 
-    return readEmployee;
+    return card;
   }
 
   @Override
@@ -67,11 +72,12 @@ public class JdbcModel implements Model {
       statement.setString(3, readEmployee.getSurname());
       statement.setString(4, readEmployee.getEmail());
       statement.setString(5, readEmployee.getMobileNumber());
-      statement.setLong(6, readEmployee.getCardID());
       statement.executeUpdate();
     } catch (SQLException e) {
       e.printStackTrace();
+      throw new ParametersMissing("Parameters are missing");
     }
+
   }
 
   @Override
@@ -89,8 +95,7 @@ public class JdbcModel implements Model {
           employee.setSurname(result.getString(3));
           employee.setEmail(result.getString(4));
           employee.setMobileNumber(result.getString(5));
-          employee.setCardID(result.getLong(6));
-        }
+          }
       }
     } catch (SQLException e) {
       e.printStackTrace();
@@ -110,6 +115,8 @@ public class JdbcModel implements Model {
         while (result.next()) {
           card.setCardID(result.getLong(1));
           card.setCredit(result.getDouble(2));
+          card.setPIN(result.getInt(3));
+          card.setEmployeeID(result.getLong(4));
           }
       }
     } catch (SQLException e) {
@@ -163,7 +170,6 @@ public class JdbcModel implements Model {
         employee.setSurname(result.getString(3));
         employee.setEmail(result.getString(4));
         employee.setMobileNumber(result.getString(5));
-        employee.setCardID(result.getLong(6));
         allEmployees.add(employee);
       }
     } catch (SQLException e) {

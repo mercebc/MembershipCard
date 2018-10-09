@@ -1,10 +1,12 @@
 package Controller;
 
+import Exceptions.EmployeeAlreadyRegistered;
 import Model.Model;
-import Model.Exceptions.CardNotRegistered;
-import Model.Exceptions.EmployeeNotRegistered;
+import Exceptions.CardNotRegistered;
+import Exceptions.EmployeeNotRegistered;
 import Model.Card;
 import Model.Employee;
+import Model.Validator;
 import View.View;
 import io.javalin.Context;
 
@@ -14,11 +16,13 @@ public class Detail {
 
   View myView;
   Model myModel;
+  Validator myValidator;
 
-  public Detail(View myView, Model myModel) {
+  public Detail(View myView, Model myModel, Validator myValidator) {
 
     this.myView = myView;
     this.myModel = myModel;
+    this.myValidator = myValidator;
 
   }
 
@@ -28,25 +32,14 @@ public class Detail {
     long cardID = Long.parseLong(cardIDString);
 
     try {
-      Card card = getCard(cardID);
+      myValidator.CardNotRegistered(cardID);
+      Card card = myModel.getCardById(cardID);
+
       context.status(200);
       context.result(myView.generateJsonFromCard(card));
     } catch (CardNotRegistered e) {
       context.status(404);
       context.result("Please register card before continue");
-    }
-
-  }
-
-
-  public Card getCard(long cardID) {
-
-    Card card = myModel.getCardById(cardID);
-
-    if (card.getCardID() == 0) {
-      throw new CardNotRegistered("Card is not registered");
-    } else {
-      return card;
     }
 
   }
@@ -57,7 +50,10 @@ public class Detail {
     long employeeID = Long.parseLong(employeeIDString);
 
     try {
-      Employee employee = getEmployee(employeeID);
+      myValidator.EmployeeNotRegistered(employeeID);
+
+      Employee employee = myModel.getEmployeeById(employeeID);
+
       context.status(200);
       context.result(myView.generateJsonFromEmployee(employee));
     } catch (EmployeeNotRegistered e) {
@@ -65,17 +61,6 @@ public class Detail {
       context.result("Please register employee before continue");
     }
 
-  }
-
-  public Employee getEmployee(long employeeID) {
-
-    Employee employee = myModel.getEmployeeById(employeeID);
-
-    if (employee.getEmployeeID() == 0) {
-      throw new EmployeeNotRegistered("Employee is not registered");
-    } else {
-      return employee;
-    }
   }
 
   public void handleEmployeesList(Context context) {

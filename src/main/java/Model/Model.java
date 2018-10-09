@@ -7,7 +7,7 @@ public interface Model {
 
   void setConnectionString(String url, String user, String password);
 
-  Employee registerCard(Employee readEmployee);
+  Card registerCard(Employee readEmployee);
 
   void registerEmployee(Employee readEmployee);
 

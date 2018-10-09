@@ -1,4 +1,4 @@
-import Model.Employee;
+import Model.Card;
 import View.GsonView;
 import View.View;
 import okhttp3.MediaType;
@@ -34,12 +34,12 @@ public class RegistrationTest extends TestSetUp {
 
     Response response = client.newCall(request).execute();
 
-    Employee readEmployee = myView.generateEmployeeFromJson(response.body().string());
+    Card readCard = myView.generateCardFromJson(response.body().string());
 
-    String url = request.url() + "/" + readEmployee.getCardID();
+    String url = request.url() + "/" + readCard.getCardID();
 
     assertEquals(url, response.header("Location"));
-    assertEquals(401, readEmployee.getEmployeeID());
+    assertEquals(401, readCard.getEmployeeID());
   }
 
 }

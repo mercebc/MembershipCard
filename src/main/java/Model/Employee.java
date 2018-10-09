@@ -6,7 +6,6 @@ public class Employee {
   private String surname;
   private String email;
   private String mobileNumber;
-  private long cardID;
 
   public String getSurname() {
     return surname;
@@ -26,10 +25,6 @@ public class Employee {
 
   public String getMobileNumber() {
     return mobileNumber;
-  }
-
-  public long getCardID() {
-    return cardID;
   }
 
   public void setSurname(String surname) {
@@ -52,7 +47,4 @@ public class Employee {
     this.email = email;
   }
 
-  public void setCardID(long cardID) {
-    this.cardID = cardID;
-  }
 }

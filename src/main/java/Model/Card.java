@@ -5,6 +5,7 @@ public class Card {
   private double amountTopUp;
   private double credit;
   private int PIN;
+  private long employeeID;
 
   public long getCardID() {
     return cardID;
@@ -34,4 +35,11 @@ public class Card {
     this.credit = credit;
   }
 
+  public long getEmployeeID() {
+    return employeeID;
+  }
+
+  public void setEmployeeID(long employeeID) {
+    this.employeeID = employeeID;
+  }
 }

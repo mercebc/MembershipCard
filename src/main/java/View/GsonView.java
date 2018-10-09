@@ -20,11 +20,6 @@ public class GsonView implements View {
   }
 
   @Override
-  public String generateJsonFromCards(ArrayList<Card> cards){
-    return gson.toJson(cards);
-  }
-
-  @Override
   public Card generateCardFromJson(String json) {
     return gson.fromJson(json, Card.class);
   }
