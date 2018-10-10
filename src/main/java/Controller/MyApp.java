@@ -30,6 +30,9 @@ public class MyApp {
     Registration registration = new Registration(gson, jdbc, validate);
     Edit edit = new Edit(gson, jdbc, validate);
     Detail detail = new Detail(gson, jdbc, validate);
+    Present present = new Present(gson, jdbc, validate);
+
+    app.get("present/:id", present::handlePresentation);
 
     app.get("/cards/:id", detail::handleCardDetail);
     app.get("/employees/", detail::handleEmployeesList);

@@ -31,7 +31,7 @@ public class DetailTest extends TestSetUp{
         .url("http://localhost:7000/cards")
         .post(body)
         .build();
-    Response newCardResponse =client.newCall(newCardRequest).execute();
+    Response newCardResponse = client.newCall(newCardRequest).execute();
     //New card and employee created
 
     Card newCard = myView.generateCardFromJson(newCardResponse.body().string());

@@ -3,6 +3,8 @@ package View;
 import Model.Card;
 import Model.Employee;
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
 
 import java.util.ArrayList;
 
@@ -37,6 +39,11 @@ public class GsonView implements View {
   @Override
   public Employee generateEmployeeFromJson(String json) {
     return gson.fromJson(json, Employee.class);
+  }
+
+  @Override
+  public String generateMessage(Message message){
+    return gson.toJson(message);
   }
 
 

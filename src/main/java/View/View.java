@@ -16,4 +16,6 @@ public interface View {
   String generateJsonFromEmployees(ArrayList<Employee> employees);
 
   Employee generateEmployeeFromJson(String json);
+
+  String generateMessage(Message message);
 }
