@@ -37,7 +37,7 @@ public class EditTest extends TestSetUp{
 
     Card newCard = myView.generateCardFromJson(newCardResponse.body().string());
 
-    long cardID = newCard.getEmployeeID();
+    long cardID = newCard.getCardID();
 
     json = "{'amountTopUp':9}";
     body = RequestBody.create(JSON,json);

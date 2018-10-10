@@ -1,11 +1,10 @@
 package Controller;
 
-import Exceptions.EmployeeAlreadyRegistered;
-import Model.Model;
 import Exceptions.CardNotRegistered;
 import Exceptions.EmployeeNotRegistered;
 import Model.Card;
 import Model.Employee;
+import Model.Model;
 import Model.Validator;
 import View.View;
 import io.javalin.Context;
