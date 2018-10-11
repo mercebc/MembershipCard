@@ -34,13 +34,13 @@ public class Registration {
     Employee readEmployee = myView.generateEmployeeFromJson(context.body());
 
     try {
-      myValidator.EmployeeRegistered(readEmployee); //throws exception when employee found
-      myValidator.CardRegistered(cardID); //throws exception when card found
+      myValidator.employeeRegistered(readEmployee); //throws exception when employee found
+      myValidator.cardRegistered(cardID); //throws exception when card found
 
       myDAO.registerEmployee(readEmployee);
       Card newCard = myDAO.registerCard(cardID, readEmployee);
 
-      context.status(401);
+      context.status(201);
       context.result(myView.generateJsonFromCard(newCard));
 
       String url = context.url() + "/" + newCard.getCardID();

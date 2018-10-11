@@ -16,7 +16,7 @@ public class MyApp {
 
     app.server(() -> {
       Server server = new Server();
-      server.setStopTimeout(2000);
+      server.setStopTimeout(120000);
       return server;
     });
 

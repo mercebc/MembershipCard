@@ -8,6 +8,7 @@ import Exceptions.ParametersMissing;
 import Exceptions.EmployeeNotRegistered;
 import Model.Card;
 import View.View;
+import View.Message;
 import io.javalin.Context;
 
 public class Edit {
@@ -32,7 +33,7 @@ public class Edit {
     Employee readEmployee = myView.generateEmployeeFromJson(context.body());
 
     try {
-        myValidator.EmployeeNotRegistered(employeeID);
+        myValidator.employeeNotRegistered(employeeID);
         myDAO.updateEmployeeInfo(employeeID, readEmployee);
 
         Employee retrievedEmployee = myDAO.getEmployeeById(employeeID);
@@ -41,10 +42,12 @@ public class Edit {
         context.result(myView.generateJsonFromEmployee(retrievedEmployee));
     } catch (EmployeeNotRegistered e) {
       context.status(404);
-      context.result("Please register employee before editing");
+      Message message = new Message("Please register the employee before editing");
+      context.result(myView.generateMessage(message));
     } catch (ParametersMissing e) {
       context.status(400);
-      context.result("Parameters missing");
+      Message message = new Message("Parameters missing");
+      context.result(myView.generateMessage(message));
     }
   }
 
@@ -56,8 +59,8 @@ public class Edit {
     Card readCard = myView.generateCardFromJson(context.body());
 
     try {
-      myValidator.CardNotRegistered(cardID);
-      myValidator.CardHasAmountTopUp(readCard);
+      myValidator.cardNotRegistered(cardID);
+      myValidator.cardHasAmountTopUp(readCard);
 
       Card retrievedCard = updateCredit(cardID, readCard);
 
@@ -65,10 +68,12 @@ public class Edit {
       context.result(myView.generateJsonFromCard(retrievedCard));
     } catch (CardNotRegistered e) {
       context.status(404);
-      context.result("Please register the card before topping up");
+      Message message = new Message("Please register the card before topping up");
+      context.result(myView.generateMessage(message));
     } catch (ParametersMissing e) {
       context.status(400);
-      context.result("Parameters missing");
+      Message message = new Message("Parameters missing");
+      context.result(myView.generateMessage(message));
     }
 
   }

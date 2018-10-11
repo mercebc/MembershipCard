@@ -7,6 +7,7 @@ import Model.Employee;
 import Model.DAO;
 import Model.Validator;
 import View.View;
+import View.Message;
 import io.javalin.Context;
 
 import java.util.ArrayList;
@@ -31,14 +32,15 @@ public class Detail {
     long cardID = Long.parseLong(cardIDString);
 
     try {
-      myValidator.CardNotRegistered(cardID);
+      myValidator.cardNotRegistered(cardID);
       Card card = myDAO.getCardById(cardID);
 
       context.status(200);
       context.result(myView.generateJsonFromCard(card));
     } catch (CardNotRegistered e) {
       context.status(404);
-      context.result("Please register card before continue");
+      Message message = new Message("Please register the card before continue");
+      context.result(myView.generateMessage(message));
     }
 
   }
@@ -49,7 +51,7 @@ public class Detail {
     long employeeID = Long.parseLong(employeeIDString);
 
     try {
-      myValidator.EmployeeNotRegistered(employeeID);
+      myValidator.employeeNotRegistered(employeeID);
 
       Employee employee = myDAO.getEmployeeById(employeeID);
 
@@ -57,7 +59,8 @@ public class Detail {
       context.result(myView.generateJsonFromEmployee(employee));
     } catch (EmployeeNotRegistered e) {
       context.status(404);
-      context.result("Please register employee before continue");
+      Message message = new Message("Please register the employee before continue");
+      context.result(myView.generateMessage(message));
     }
 
   }

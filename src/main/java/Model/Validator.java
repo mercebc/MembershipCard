@@ -15,7 +15,7 @@ public class Validator {
 
   }
 
-  public void CardNotRegistered(long cardID) {
+  public void cardNotRegistered(long cardID) {
     Card card = myDAO.getCardById(cardID);
 
     if (card.getCardID() == 0) {
@@ -23,7 +23,7 @@ public class Validator {
     }
   }
 
-  public void CardRegistered(long cardID) {
+  public void cardRegistered(long cardID) {
     Card card = myDAO.getCardById(cardID);
 
     if (card.getCardID() != 0) {
@@ -31,7 +31,7 @@ public class Validator {
     }
   }
 
-  public void EmployeeRegistered(Employee employee) {
+  public void employeeRegistered(Employee employee) {
     Employee foundEmployee = myDAO.getEmployeeById(employee.getEmployeeID());
 
     if (foundEmployee.getEmployeeID() != 0) {
@@ -39,7 +39,7 @@ public class Validator {
     }
   }
 
-  public void EmployeeNotRegistered(long employeeID) {
+  public void employeeNotRegistered(long employeeID) {
     Employee foundEmployee = myDAO.getEmployeeById(employeeID);
 
     if (foundEmployee.getEmployeeID() == 0) {
@@ -48,7 +48,7 @@ public class Validator {
   }
 
 
-  public void CardHasAmountTopUp(Card readCard) {
+  public void cardHasAmountTopUp(Card readCard) {
 
     if (readCard.getAmountTopUp() == 0) {
       throw new ParametersMissing("Parameters missing");

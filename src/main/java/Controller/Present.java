@@ -30,7 +30,7 @@ public class Present {
     long cardID = Long.parseLong(cardIDString);
 
     try{
-      myValidator.CardNotRegistered(cardID); //throws exception when card not found
+      myValidator.cardNotRegistered(cardID); //throws exception when card not found
 
       Card card = myDAO.getCardById(cardID);
       Employee employee = myDAO.getEmployeeById(card.getEmployeeID());
