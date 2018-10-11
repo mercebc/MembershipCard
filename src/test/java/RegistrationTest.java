@@ -28,7 +28,7 @@ public class RegistrationTest extends TestSetUp {
     RequestBody body = RequestBody.create(JSON,json);
 
     Request request = new Request.Builder()
-        .url("http://localhost:7000/cards")
+        .url("http://localhost:7000/cards/123")
         .post(body)
         .build();
 

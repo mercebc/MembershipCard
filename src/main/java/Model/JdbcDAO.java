@@ -7,15 +7,14 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 
-public class JdbcModel implements Model {
+public class JdbcDAO implements DAO {
 
   Connection connection;
 
   private final String SQL_CREATE_EMPLOYEE = "INSERT INTO employees (employeeID, firstName, surname, email, mobileNumber) VALUES (?,?,?,?,?)";
-  private final String SQL_CREATE_CARD = "INSERT INTO cards (credit, PIN, employeeID) values (DEFAULT, DEFAULT, ?)";
+  private final String SQL_CREATE_CARD = "INSERT INTO cards (cardID, credit, PIN, employeeID) values (?, DEFAULT, DEFAULT, ?)";
 
   private final String SQL_GET_EMPLOYEE_BY_ID = "SELECT * FROM employees WHERE employeeID = ?";
   private final String SQL_GET_ALL_EMPLOYEES = "SELECT * FROM employees";
@@ -26,10 +25,32 @@ public class JdbcModel implements Model {
 
   private final String SQL_DELETE_CARD = "DELETE FROM cards WHERE cardID = ?"; //delete employee too
 
-  public JdbcModel(String url, String user, String password){
+  public JdbcDAO(String url, String user, String password){
 
     setConnectionString(url, user, password);
 
+  }
+
+  @Override
+  public Card getCardById(long cardId) {
+
+    Card card = new Card(); //default values
+
+    try (PreparedStatement statement = connection.prepareStatement(SQL_GET_CARD_BY_ID)){
+      statement.setLong(1, cardId);
+
+      try (ResultSet result = statement.executeQuery()) {
+        while (result.next()) {
+          card.setCardID(result.getLong(1));
+          card.setCredit(result.getDouble(2));
+          card.setPIN(result.getInt(3));
+          card.setEmployeeID(result.getLong(4));
+        }
+      }
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+    return card;
   }
 
   @Override
@@ -42,25 +63,24 @@ public class JdbcModel implements Model {
   }
 
   @Override
-  public Card registerCard(Employee readEmployee){
+  public Card registerCard(long cardID, Employee readEmployee){
 
-    Card card = new Card(); //default values
+    Card card = new Card();
 
-    try (PreparedStatement statement = connection.prepareStatement(SQL_CREATE_CARD, Statement.RETURN_GENERATED_KEYS)){
-      statement.setLong(1, readEmployee.getEmployeeID());
+    try (PreparedStatement statement = connection.prepareStatement(SQL_CREATE_CARD)){
+      statement.setLong(1, cardID);
+      statement.setLong(2, readEmployee.getEmployeeID());
       statement.executeUpdate();
-      try (ResultSet generatedKeys = statement.getGeneratedKeys()) {
-        if (generatedKeys.next()) {
-          card.setCardID(generatedKeys.getLong(1));
-          card.setEmployeeID(readEmployee.getEmployeeID());
-        }
-      }
     } catch (SQLException e) {
       e.printStackTrace();
       throw new ParametersMissing("Parameters are missing");
     }
 
+    card.setCardID(cardID);
+    card.setEmployeeID(readEmployee.getEmployeeID());
+
     return card;
+
   }
 
   @Override
@@ -103,27 +123,7 @@ public class JdbcModel implements Model {
     return employee;
   }
 
-  @Override
-  public Card getCardById(long cardId) {
 
-    Card card = new Card(); //default values
-
-    try (PreparedStatement statement = connection.prepareStatement(SQL_GET_CARD_BY_ID)){
-      statement.setLong(1, cardId);
-
-      try (ResultSet result = statement.executeQuery()) {
-        while (result.next()) {
-          card.setCardID(result.getLong(1));
-          card.setCredit(result.getDouble(2));
-          card.setPIN(result.getInt(3));
-          card.setEmployeeID(result.getLong(4));
-          }
-      }
-    } catch (SQLException e) {
-      e.printStackTrace();
-    }
-    return card;
-  }
 
   @Override
   public void topUpCreditOnCard(long cardId, double newCredit) {

@@ -30,7 +30,7 @@ public class EditTest extends TestSetUp{
     RequestBody body = RequestBody.create(JSON,json);
 
     Request newCardRequest = new Request.Builder()
-        .url("http://localhost:7000/cards")
+        .url("http://localhost:7000/cards/123")
         .post(body)
         .build();
     Response newCardResponse =client.newCall(newCardRequest).execute();
@@ -65,7 +65,7 @@ public class EditTest extends TestSetUp{
     RequestBody body = RequestBody.create(JSON,json);
 
     Request newCardRequest = new Request.Builder()
-        .url("http://localhost:7000/cards")
+        .url("http://localhost:7000/cards/123")
         .post(body)
         .build();
     Response newCardResponse =client.newCall(newCardRequest).execute();
@@ -118,7 +118,7 @@ public class EditTest extends TestSetUp{
     RequestBody body = RequestBody.create(JSON,json);
 
     Request newCardRequest = new Request.Builder()
-        .url("http://localhost:7000/cards")
+        .url("http://localhost:7000/cards/123")
         .post(body)
         .build();
     Response newCardResponse =client.newCall(newCardRequest).execute();

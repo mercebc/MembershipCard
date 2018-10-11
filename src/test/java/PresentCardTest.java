@@ -16,7 +16,6 @@ public class PresentCardTest extends TestSetUp{
 
   MediaType JSON = MediaType.parse("application/json; charset=utf-8");
 
-
   OkHttpClient client = new OkHttpClient();
   View myView = new GsonView();
 
@@ -27,7 +26,7 @@ public class PresentCardTest extends TestSetUp{
     RequestBody body = RequestBody.create(JSON,json);
 
     Request newCardRequest = new Request.Builder()
-        .url("http://localhost:7000/cards")
+        .url("http://localhost:7000/cards/123")
         .post(body)
         .build();
     Response newCardResponse =client.newCall(newCardRequest).execute();
@@ -46,7 +45,26 @@ public class PresentCardTest extends TestSetUp{
 
   }
 
-  
+  @Test
+  public void returnRegisterMessageWhenCardIsNotFound() throws IOException {
+
+    long cardID = 1234;
+
+    Request request = new Request.Builder()
+        .url("http://localhost:7000/present/" + cardID)
+        .get()
+        .build();
+
+    Response response = client.newCall(request).execute();
+
+    assertEquals(404, response.code());
+    assertEquals("{\"message\":\"Card is not registered\"}", response.body().string());
+
+  }
+
+
+
+
 
 
 }

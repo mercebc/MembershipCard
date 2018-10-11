@@ -2,12 +2,12 @@ package Model;
 
 import java.util.ArrayList;
 
-public interface Model {
+public interface DAO {
 
 
   void setConnectionString(String url, String user, String password);
 
-  Card registerCard(Employee readEmployee);
+  Card registerCard(long cardID, Employee readEmployee);
 
   void registerEmployee(Employee readEmployee);
 

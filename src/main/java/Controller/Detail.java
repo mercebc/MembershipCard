@@ -4,7 +4,7 @@ import Exceptions.CardNotRegistered;
 import Exceptions.EmployeeNotRegistered;
 import Model.Card;
 import Model.Employee;
-import Model.Model;
+import Model.DAO;
 import Model.Validator;
 import View.View;
 import io.javalin.Context;
@@ -14,13 +14,13 @@ import java.util.ArrayList;
 public class Detail {
 
   View myView;
-  Model myModel;
+  DAO myDAO;
   Validator myValidator;
 
-  public Detail(View myView, Model myModel, Validator myValidator) {
+  public Detail(View myView, DAO myDAO, Validator myValidator) {
 
     this.myView = myView;
-    this.myModel = myModel;
+    this.myDAO = myDAO;
     this.myValidator = myValidator;
 
   }
@@ -32,7 +32,7 @@ public class Detail {
 
     try {
       myValidator.CardNotRegistered(cardID);
-      Card card = myModel.getCardById(cardID);
+      Card card = myDAO.getCardById(cardID);
 
       context.status(200);
       context.result(myView.generateJsonFromCard(card));
@@ -51,7 +51,7 @@ public class Detail {
     try {
       myValidator.EmployeeNotRegistered(employeeID);
 
-      Employee employee = myModel.getEmployeeById(employeeID);
+      Employee employee = myDAO.getEmployeeById(employeeID);
 
       context.status(200);
       context.result(myView.generateJsonFromEmployee(employee));
@@ -64,7 +64,7 @@ public class Detail {
 
   public void handleEmployeesList(Context context) {
 
-    ArrayList<Employee> employees = myModel.getAllEmployees();
+    ArrayList<Employee> employees = myDAO.getAllEmployees();
     context.status(200);
 
     context.result(myView.generateJsonFromEmployees(employees));

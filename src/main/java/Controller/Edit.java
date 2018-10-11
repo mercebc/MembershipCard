@@ -1,6 +1,6 @@
 package Controller;
 
-import Model.Model;
+import Model.DAO;
 import Model.Employee;
 import Model.Validator;
 import Exceptions.CardNotRegistered;
@@ -13,13 +13,13 @@ import io.javalin.Context;
 public class Edit {
 
   View myView;
-  Model myModel;
+  DAO myDAO;
   Validator myValidator;
 
-  public Edit(View myView, Model myModel, Validator myValidator) {
+  public Edit(View myView, DAO myDAO, Validator myValidator) {
 
     this.myView = myView;
-    this.myModel = myModel;
+    this.myDAO = myDAO;
     this.myValidator = myValidator;
 
   }
@@ -33,9 +33,9 @@ public class Edit {
 
     try {
         myValidator.EmployeeNotRegistered(employeeID);
-        myModel.updateEmployeeInfo(employeeID, readEmployee);
+        myDAO.updateEmployeeInfo(employeeID, readEmployee);
 
-        Employee retrievedEmployee = myModel.getEmployeeById(employeeID);
+        Employee retrievedEmployee = myDAO.getEmployeeById(employeeID);
 
         context.status(200);
         context.result(myView.generateJsonFromEmployee(retrievedEmployee));
@@ -75,12 +75,12 @@ public class Edit {
 
   public Card updateCredit(long cardID, Card readCard) {
 
-    Card card = myModel.getCardById(cardID);
+    Card card = myDAO.getCardById(cardID);
     double newCredit = card.getCredit() + readCard.getAmountTopUp();
 
-    myModel.topUpCreditOnCard(cardID, newCredit);
+    myDAO.topUpCreditOnCard(cardID, newCredit);
 
-    return myModel.getCardById(cardID);
+    return myDAO.getCardById(cardID);
 
   }
 

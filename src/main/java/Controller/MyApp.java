@@ -1,7 +1,7 @@
 package Controller;
 
-import Model.Model;
-import Model.JdbcModel;
+import Model.DAO;
+import Model.JdbcDAO;
 import Model.Validator;
 import View.View;
 import View.GsonView;
@@ -16,14 +16,14 @@ public class MyApp {
 
     app.server(() -> {
       Server server = new Server();
-      server.setStopTimeout(3);
+      server.setStopTimeout(2000);
       return server;
     });
 
     app.start(7000);
 
     View gson = new GsonView();
-    Model jdbc = new JdbcModel("jdbc:mysql://127.0.0.1:3306/MembershipSystem", "root", "");
+    DAO jdbc = new JdbcDAO("jdbc:mysql://127.0.0.1:3306/MembershipSystem", "root", "");
 
     Validator validate = new Validator(jdbc);
 
@@ -38,7 +38,7 @@ public class MyApp {
     app.get("/employees/", detail::handleEmployeesList);
     app.get("/employees/:id", detail::handleEmployeeDetail);
 
-    app.post("/cards", registration::handleCardRegistration);
+    app.post("/cards/:id", registration::handleCardRegistration);
 
     app.put("/employees/:id", edit::handleEdit);
     app.put("/cards/:id", edit::handleTopUp);
